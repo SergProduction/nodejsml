@@ -12,7 +12,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Parse = exports.getTop = exports.corpusesFreq = void 0;
+exports.LabledCorpus = void 0;
 var objMap = function (obj, fn) {
     return Object.entries(obj).reduce(function (acc, _a) {
         var _b;
@@ -23,126 +23,141 @@ var objMap = function (obj, fn) {
 var objLen = function (obj) {
     return Object.keys(obj).length;
 };
+var sum = function (arr) { return arr.reduce(function (acc, p) { return acc + p; }, 0); };
+var product = function (arr) { return arr.reduce(function (acc, p) { return acc * p; }, 0.00001); };
+var Counter = /** @class */ (function () {
+    function Counter(target) {
+        this.target = target || {}; // Object.create(null)
+    }
+    Counter.fromArray = function (arr) {
+        var target = {};
+        arr.forEach(function (key) {
+            if (target[key]) {
+                target[key] = target[key] + 1;
+            }
+            else {
+                target[key] = 1;
+            }
+        });
+        return new Counter(target);
+    };
+    Counter.prototype.count = function (key) {
+        return this.target[key] || 0;
+    };
+    Counter.prototype.len = function () {
+        return Object.keys(this.target).length;
+    };
+    Counter.prototype.map = function (fn) {
+        var objectCounter = {};
+        this.forEach(function (key, count, len) {
+            objectCounter[key] = fn(key, count, len);
+        });
+        return new Counter(objectCounter);
+    };
+    Counter.prototype.forEach = function (fn) {
+        var len = this.len();
+        objMap(this.target, function (key, count) { return fn(key, count, len); });
+    };
+    Counter.prototype.merge = function (counter) {
+        var fullTarget = {};
+        var targets = [this.target, counter.target];
+        targets.forEach(function (target) {
+            Object.entries(target).forEach(function (_a) {
+                var key = _a[0], count = _a[1];
+                fullTarget[key] = fullTarget[key] !== undefined
+                    ? fullTarget[key] + count
+                    : count;
+            });
+        });
+        return new Counter(fullTarget);
+    };
+    return Counter;
+}());
 // --- parse weigth ---
 var getTokens = function (doc) {
     return doc.split(/\s+/);
 };
-var calcWeightDoc = function (tf, all) { return 1; };
-var calcWeightCorpus = function (tf, all) { return tf; };
-var calcWeight = function (freqDict, calcFn) {
-    return objMap(freqDict, function (k, v) { return calcFn(v, objLen(freqDict)); });
-};
-var docTF = function (doc) {
+var calcWeightDoc = function (count, len) { return 1; };
+var calcWeightCorpus = function (count, len) { return count; };
+var calcDocCounter = function (doc) {
     var tokens = getTokens(doc);
-    var freqTok = {};
-    tokens.forEach(function (t) {
-        if (freqTok[t]) {
-            freqTok[t] = freqTok[t] + 1;
-        }
-        else {
-            freqTok[t] = 1;
-        }
-    });
-    return calcWeight(freqTok, calcWeightDoc);
+    var freqTok = Counter.fromArray(tokens);
+    return freqTok.map(function (key, count, len) { return calcWeightDoc(count, len); });
 };
-var corpusTF = function (corpus) {
-    var docsFreq = corpus.map(function (doc) { return docTF(doc); });
-    var corpusFreq = {};
-    docsFreq.forEach(function (docFreq) {
-        Object.keys(docFreq).forEach(function (docWorld) {
-            if (corpusFreq[docWorld]) {
-                corpusFreq[docWorld] = corpusFreq[docWorld] + docFreq[docWorld];
-            }
-            else {
-                corpusFreq[docWorld] = docFreq[docWorld];
-            }
-        });
-    });
-    return calcWeight(corpusFreq, calcWeightCorpus);
+var calcCorpusCounter = function (docsCounter) {
+    var corpusCounter = docsCounter.reduce(function (acc, counter) { return acc.merge(counter); }, new Counter());
+    return corpusCounter.map(function (key, count, len) { return calcWeightCorpus(count, len); });
 };
+// corpusCounter(hsCorpus);
+/*
+export type Label = string;
+export type LabeledDocs = Record<Label, string[]>;
+export type DictCorpusCounter = Record<Label, Counter>;
 // state = {[key: label]: CorpusesTF}
-exports.corpusesFreq = function (corpuses) {
-    var corpusesTF = {};
-    Object.keys(corpuses).forEach(function (label) {
-        corpusesTF[label] = corpusTF(corpuses[label]);
-    });
-    return corpusesTF;
+
+export const dictCorpusCounter = (corpuses: LabeledDocs): DictCorpusCounter => {
+  const corpusesTF: DictCorpusCounter = {};
+  Object.keys(corpuses).forEach((label) => {
+    corpusesTF[label] = calcCorpusCounter(corpuses[label]);
+  });
+  return corpusesTF;
 };
-exports.getTop = function (corpusesTF, count) {
-    var filtredCorpusesTF = {};
-    Object.keys(corpusesTF).forEach(function (label) {
-        var corpusTF = corpusesTF[label];
-        filtredCorpusesTF[label] = Object.fromEntries(Object.entries(corpusTF)
-            .sort(function (_a, _b) {
-            var k1 = _a[0], v1 = _a[1];
-            var k2 = _b[0], v2 = _b[1];
-            return v2 - v1;
-        }) // 99,98,97
-            .slice(0, count));
-    });
-    return filtredCorpusesTF;
+ */
+/*
+export const getTop = (corpusesTF: CorpusesTF, count: number) => {
+  const filtredCorpusesTF: CorpusesTF = {};
+  Object.keys(corpusesTF).forEach((label) => {
+    const corpusTF = corpusesTF[label];
+    filtredCorpusesTF[label] = Object.fromEntries(
+      Object.entries(corpusTF)
+        .sort(([k1, v1], [k2, v2]) => v2 - v1) // 99,98,97
+        .slice(0, count),
+    );
+  });
+  return filtredCorpusesTF;
 };
-var Parse = /** @class */ (function () {
-    function Parse(state) {
-        if (state === void 0) { state = {}; }
+*/
+var LabledCorpus = /** @class */ (function () {
+    function LabledCorpus() {
         this.state = {};
+        this.normalized = [];
     }
-    Parse.prototype.getState = function () {
-        return this.state;
-    };
-    /*
-    add(p: Parse) {
-      Object.keys(p.state).forEach((label) => {
-        this.merge(label, p.state[label]);
-      });
-    } */
-    Parse.prototype.push = function (label, corpus) {
-        var result = corpusTF(corpus);
-        this.merge(label, result, corpus.length);
-    };
-    Parse.prototype.merge = function (label, corpusTF, docCount) {
-        var acc = this.state[label];
-        if (acc) {
-            acc.docCount += docCount;
-            acc.tf = objMap(acc.tf, function (k, v) { return corpusTF[k]
-                ? v + corpusTF[k]
-                : v; });
-        }
-        else {
+    LabledCorpus.prototype.push = function (label, corpus) {
+        var newCorpusCounter = calcCorpusCounter(corpus.map(calcDocCounter));
+        if (!this.state.hasOwnProperty(label)) {
             this.state[label] = {
-                docCount: docCount,
-                tf: corpusTF
+                docLen: 0,
+                corpusCounter: new Counter()
             };
         }
+        var _a = this.state[label], docLen = _a.docLen, corpusCounter = _a.corpusCounter;
+        this.state[label].docLen = docLen + corpus.length;
+        this.state[label].corpusCounter = corpusCounter.merge(newCorpusCounter);
     };
-    Parse.prototype.print = function () { };
-    Parse.prototype.predictLabel = function (doc) {
+    LabledCorpus.prototype.scalleByDocLen = function (label) {
+        var _a = this.state[label], docLen = _a.docLen, corpusCounter = _a.corpusCounter;
+        return corpusCounter.map(function (_, count) { return count / docLen; });
+    };
+    LabledCorpus.prototype.normalize = function () {
         var _this = this;
-        var docTok = getTokens(doc);
-        var labelsMap = Object.keys(this.state).map(function (label) {
-            return {
-                label: label,
-                weigth: docTok.map(function (word) { return ({
-                    word: word,
-                    tf: _this.state[label].tf[word] || 0
-                }); })
-            };
-        });
-        labelsMap.forEach(function (doc) {
-            console.log(doc.label, _this.state[doc.label].docCount, sum(doc.weigth.map(function (p) { return p.tf; })), sum(doc.weigth.map(function (p) { return p.tf; })) / _this.state[doc.label].docCount);
-        });
-        var productLabels = labelsMap.map(function (doc) { return ({
-            label: doc.label,
-            // docCount: this.state[doc.label].docCount,
-            // pp: sum(doc.weigth.map(p => p.tf)),
-            product: sum(doc.weigth.map(function (p) { return p.tf; })) / _this.state[doc.label].docCount
-        }); }).sort(function (a, b) { return b.product - a.product; });
-        console.log({ productLabels: productLabels });
-        // const result = productLabels.reduce((p, n) => p > n ? p : n);
-        return;
+        this.normalized = Object.keys(this.state)
+            .map(function (label) { return ({
+            label: label,
+            corpusCounter: _this.scalleByDocLen(label)
+        }); });
     };
-    return Parse;
+    LabledCorpus.prototype.debugLog = function (doc) { };
+    LabledCorpus.prototype.predictLabel = function (doc) {
+        var docTokens = getTokens(doc);
+        var result = this.normalized.map(function (_a) {
+            var label = _a.label, corpusCounter = _a.corpusCounter;
+            return ({
+                label: label,
+                weight: sum(docTokens.map(function (word) { return corpusCounter.count(word); }))
+            });
+        }).sort(function (a, b) { return b.weight - a.weight; });
+        console.log(result);
+    };
+    return LabledCorpus;
 }());
-exports.Parse = Parse;
-var sum = function (arr) { return arr.reduce(function (acc, p) { return acc + p; }, 0); };
-var product = function (arr) { return arr.reduce(function (acc, p) { return acc * p; }, 0.00001); };
+exports.LabledCorpus = LabledCorpus;

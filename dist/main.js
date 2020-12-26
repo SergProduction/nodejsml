@@ -11,32 +11,35 @@ var checkDocRust = "\n#[actix_rt::main]\nasync fn main() -> std::io::Result<()> 
 var checkDocJava = "\n\nimport java.util.Scanner;\npublic class percentage_calculator {\n\n    public static void main(String[] args) {\n\nScanner sc = new Scanner(System.in);\n        System.out.println(\"enter marks in hindi\");\n        float Hindi = sc.nextFloat();\n        System.out.println(\"enter marks in english\");\n        float English = sc.nextFloat();\n        System.out.println(\"enter marks in maths\");\n        float Maths = sc.nextFloat();\n        System.out.println(\"enter marks in science\");\n        float Science = sc.nextFloat();\n        System.out.println(\"enter marks sst\");\n        float SSt = sc.nextFloat();\nfloat Total = Hindi+English+Maths+Science+SSt;\n        System.out.println(\"Total marks obtained =\"+Total);\nfloat CGPA = Total/5;\n        System.out.println(\"CGPA =\" +CGPA);\nfloat Percentage = (float) (9.5 * CGPA);\n        System.out.println(\" Percentage obtained = \" + Percentage);\n\n\n\n    }\n}\n";
 var checkDocShell = "\n#!/usr/bin/env bash\n\nmyscript () {\n    typeset a i k;\n\n    # setup cmd; declare functions\n    for i in \"${!g_@}\"; do\n        typeset -n j=$i;\n        typeset \"action_${!j}\";\n        for k in ${j}; do\n            #danger?\n            . /dev/fd/0 <<< \"function ${k} () {\n                readonly action_${!j}=$k 2>/dev/null || {\n                    printf 'error: use only one cmd of: %s\n' '\"$j\"' 1>&2;\n                    return 1;\n                };\n            }\";\n        done;\n    done;\n\n    # setup options\n    :;\n\n    # parse args\n    for a; do\n        if\n            typeset -F \"$a\" 1>/dev/null 2>&1;\n        then\n            \"$a\" && unset -f a || return 1;\n        else\n            echo unkown cmd ... 2>&1;\n            return 1;\n        fi;\n    done;\n\n    for i in \"${!action_@}\"; do\n        typeset -n j=$i;\n        printf '%s: %s\n' \"${!j}\" \"$j\";\n    done;\n};\n\nexport     g_1='create remove'     g_2='modify';\n\necho test 1:\n'myscript' create modify remove;\n\necho test 2:\n'myscript' create modify;\n";
 var tryPredicts = [
-    /*   checkDocJS,
-      checkDocCss,
-      checkDocRust,
-      checkDocJava, */
+    checkDocJS,
+    checkDocCss,
+    checkDocRust,
+    checkDocJava,
     checkDocShell
 ];
 var sliceDoc = function (data, count) { return (Object.fromEntries(Object.entries(data).map(function (_a) {
     var label = _a[0], corpus = _a[1];
     return ([
         label,
-        corpus.length > count ? corpus.slice(0, 50) : corpus
+        corpus.length > count ? corpus.slice(0, count) : corpus
     ]);
 }))); };
 var main = function () {
-    var json = sliceDoc(data_json_1.default, 40);
+    var json = sliceDoc(data_json_1.default, 50);
     var labels = Object.keys(json);
-    var parser = new parse_1.Parse();
+    var parser = new parse_1.LabledCorpus();
+    console.time('calculate');
     labels.forEach(function (label, i) {
         console.log("label: " + label + ", docs:" + json[label].length);
         parser.push(label, json[label]);
         console.log("all:" + labels.length + ", i:" + i);
     });
+    console.timeEnd('calculate');
+    parser.normalize();
     tryPredicts.forEach(function (doc) {
-        console.time();
+        console.time('predict');
         parser.predictLabel(doc);
-        console.timeEnd();
+        console.timeEnd('predict');
     });
 };
 var printLabel = function (label) {
@@ -45,3 +48,7 @@ var printLabel = function (label) {
 };
 main();
 // printLabel('Shell')
+// exp1: classic obj
+// calculate: 40769.242ms
+// predict: 2.789ms
+// calculate: 26574.327ms
