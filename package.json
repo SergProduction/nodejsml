@@ -8,7 +8,7 @@
     "dev:ts": "tsc --watch",
     "dev:node": "nodemon --watch dist dist/main.js",
     "build:ts": "tsc",
-    "build:run": "tsc && node ./dist/main.js"
+    "build:run": "tsc ; node ./dist/main.js"
   },
   "keywords": [],
   "author": "",

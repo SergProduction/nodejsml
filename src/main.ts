@@ -1,6 +1,6 @@
 import { LabledCorpus } from './parse'
 import sampleJson from '../sample/prog-langs.json'
-import checkSample from '../check-sample/prog-langs'
+import checkSample from './check-sample'
 
 
 
