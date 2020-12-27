@@ -19,14 +19,16 @@ __терм__
 
 ## Методы
 
-## class Counter
-target: Record<string, number>  
+### Counter
+`target: Record<string, number>`  
 считает кол-во одинаковых строк в массиве
 
 
-## class TF  
-docs: Counter[]  
-corpus: Counter  
+### TF  
+```
+docs: Counter[]
+corpus: Counter
+```
 счиатет сырую частоту слов для каждого документа this.docs  
 и для корпуса по всем документам this.corpus  
 
@@ -45,8 +47,8 @@ handleCalcDoc, handleCalcCorpus - ф-ции для расчета весов т�
 по умолчанию считает сырую частоту  
 
 
-## class ManyTF
-state: Record<string, TF>  
+### ManyTF
+`state: Record<string, TF>`  
 создает много матриц TF
 
 `addCorpus(label: string, corpus: string[])`  
