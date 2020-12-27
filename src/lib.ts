@@ -20,11 +20,12 @@ export const product = (arr: number[]) => arr.reduce((acc, p) => acc * p, 0.0000
 
 export class Counter {
   target: Record<string, number>
+
   constructor(target?: Record<string, number>) {
     this.target = target || {} // Object.create(null)
   }
 
-  static fromArray(arr: string[]) {
+  static fromArray(arr: string[]): Counter {
     const target: Record<string, number> = {}
     arr.forEach((key) => {
       if (target[key]) {
@@ -36,15 +37,20 @@ export class Counter {
     return new Counter(target)
   }
 
+  set(key: string, count: number) {
+    this.target[key] = count
+  }
+
   count(key: string): number {
     return this.target[key] || 0
   }
   
-  len() {
+  len(): number {
     return Object.keys(this.target).length
   }
 
-  map(fn: (key: string, count: number, len: number) => number) {
+  // immutable
+  map(fn: (key: string, count: number, len: number) => number): Counter {
     const objectCounter: Record<string, number> = {}
     this.forEach((key, count, len) => {
       objectCounter[key] = fn(key, count, len)
@@ -52,12 +58,16 @@ export class Counter {
     return new Counter(objectCounter)
   }
 
-  forEach(fn: (key: string, count: number, len: number) => void) {
+  // iter
+  forEach(fn: (key: string, count: number, len: number) => void): void {
     const len = this.len()
-    objMap(this.target, (key, count) => fn(key, count, len))
+    Object.entries(this.target).forEach(([key, count]) => {
+      fn(key, count, len)
+    })
   }
 
-  merge(counter: Counter) {
+  // immutable
+  concat(counter: Counter): Counter {
     const fullTarget: Record<string, number> = {}
     const targets = [this.target, counter.target]
     targets.forEach((target) => {
@@ -68,5 +78,15 @@ export class Counter {
       })
     })
     return new Counter(fullTarget)
+  }
+  
+  // mutable
+  extend(counter: Counter): Counter {
+    counter.forEach((key, count) => {
+      this.target[key] = this.target[key]
+        ? this.target[key] + count
+        : count
+    })
+    return this
   }
 }

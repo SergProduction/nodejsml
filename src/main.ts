@@ -1,4 +1,4 @@
-import { LabledCorpus } from './parse'
+import { ManyTF } from './tf'
 import sampleJson from '../sample/prog-langs.json'
 import checkSample from './check-sample'
 
@@ -19,21 +19,22 @@ const main = () => {
 
   const labels = Object.keys(json)
   
-  const parser = new LabledCorpus()
+  const parser = new ManyTF()
 
   console.time('calculate')
   labels.forEach((label, i) => {
     console.log(`label: ${label}, docs:${json[label].length}`)
-    parser.push(label, json[label])
+    parser.addCorpus(label, json[label])
     console.log(`all:${labels.length}, i:${i}`)
   })
   console.timeEnd('calculate')
 
-  parser.normalize()
+  parser.calcWeigths()
 
   checkSample.forEach(doc => {
     console.time('predict')
-    parser.predictLabel(doc)
+    const result = parser.predictLabel(doc)
+    console.log(result)
     console.timeEnd('predict')
   })
 
