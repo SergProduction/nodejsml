@@ -20,26 +20,26 @@ __терм__
 ## Методы
 
 ### Counter
-`target: Record<string, number>`  
+__target: Record<string, number>__  
 считает кол-во одинаковых строк в массиве
 
 
 ### TF  
-```
-docs: Counter[]
-corpus: Counter
-```
+
+__docs: Counter[]__  
+__corpus: Counter__  
+
 счиатет сырую частоту слов для каждого документа this.docs  
 и для корпуса по всем документам this.corpus  
 
-`addCorpus(corpus: string[])`  
+- __addCorpus(corpus: string[])__  
 добавить сразу весь корпус с документами  
 
-`addDoc(doc: string)`  
+- __addDoc(doc: string)__  
 добавить один документ к корпусу  
 можно вызывать несколько раз, дополнит существующий корпус новыми доментами
 
-`calcWeigths(handleCalcDoc?: CalcWeigthDoc, handleCalcCorpus?: CalcWeigthCorpus, isImmutable?: boolean)`  
+- __calcWeigths(handleCalcDoc?: CalcWeigthDoc, handleCalcCorpus?: CalcWeigthCorpus, isImmutable?: boolean)__  
 пересчитывает частоту для каждого документа и для корпуса,  
 по дефолту перезаписывает частоту в this.docs, this.corpus,  
 если передать isImmutable = true, то вернет новый TF с перерасчитаными весами.  
@@ -48,18 +48,18 @@ handleCalcDoc, handleCalcCorpus - ф-ции для расчета весов т�
 
 
 ### ManyTF
-`state: Record<string, TF>`  
+__state: Record<string, TF>__  
 создает много матриц TF
 
-`addCorpus(label: string, corpus: string[])`  
+- __addCorpus(label: string, corpus: string[])__  
 добавить\создать TF для label  
 можно вызывать несколько раз, дополнит существующий корпус новыми доментами
 
 
-`calcWeigths`
+- __calcWeigths__
 работает так же как TF.calcWeigths, применяется для каждого TF
 
-`predictLabel(doc: string)`
+- __predictLabel(doc: string)__
 определит на какой label TF больше всего похож новый документ
 
 ## Рекомендации
