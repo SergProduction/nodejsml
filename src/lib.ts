@@ -18,6 +18,9 @@ export const sum = (arr: number[]) => arr.reduce((acc, p) => acc + p, 0)
 export const product = (arr: number[]) => arr.reduce((acc, p) => acc * p, 0.00001)
 
 
+/*
+считает кол-во одинаковых строк в массиве
+*/
 export class Counter {
   target: Record<string, number>
 

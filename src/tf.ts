@@ -31,7 +31,7 @@ export class TF {
     this.corpus.extend(tfDoc)
   }
 
-  calcWeigths(isImmutable?: boolean, handleCalcDoc?: CalcWeigthDoc, handleCalcCorpus?: CalcWeigthCorpus) {
+  calcWeigths(handleCalcDoc?: CalcWeigthDoc, handleCalcCorpus?: CalcWeigthCorpus, isImmutable?: boolean) {
     const calcWeigthDoc = handleCalcDoc || this.handleCalcDoc
     const calcWeigthCorpus = handleCalcCorpus || this.handleCalcCorpus
 
@@ -47,7 +47,10 @@ export class TF {
     const newTfCorpus = rawTfCorpus.map((key, count, len) => calcWeigthCorpus(count, len, this.docs.length))
     
     if (isImmutable) {
-      return new TF(newTfDocs, newTfCorpus)
+      const newTF = new TF(newTfDocs, newTfCorpus)
+      newTF.handleCalcDoc = calcWeigthDoc
+      newTF.handleCalcCorpus = calcWeigthCorpus
+      return newTF
     }
     this.docs = newTfDocs
     this.corpus = newTfCorpus
@@ -72,18 +75,21 @@ export class ManyTF {
     this.state[label].addCorpus(corpus)
   }
 
-  calcWeigths(isImmutable?: boolean, handleCalcDoc?: CalcWeigthDoc, handleCalcCorpus?: CalcWeigthCorpus) {
+  calcWeigths(handleCalcDoc?: CalcWeigthDoc, handleCalcCorpus?: CalcWeigthCorpus, isImmutable?: boolean) {
     const calcDoc = handleCalcDoc || this.handleCalcDoc
     const calcCorpus = handleCalcCorpus || this.handleCalcCorpus
 
     const newManyTf: Record<string, TF> = Object.keys(this.state).reduce((acc, label) => {
       const tf = this.state[label]
-      const newTf = tf.calcWeigths(true, calcDoc, calcCorpus)
+      const newTf = tf.calcWeigths(calcDoc, calcCorpus, true)
       return { ...acc, [label]: newTf }
     }, {})
 
     if (isImmutable) {
-      return new ManyTF(newManyTf)
+      const newManyTF = new ManyTF(newManyTf)
+      newManyTF.handleCalcDoc = calcDoc
+      newManyTF.handleCalcCorpus = calcCorpus
+      return newManyTF
     }
     this.state = newManyTf
   }
