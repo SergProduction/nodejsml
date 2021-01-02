@@ -1,12 +1,30 @@
+import path from 'path'
+import fs, { RmOptions } from 'fs'
+import { promisify } from 'util'
+
+
 export const objMap = <A, B>(
   obj: Record<string, A>,
-  fn: (k: string, v: A) => B,
-): Record<string, B> => {
-  return Object.entries(obj).reduce(
-    (acc, [k, v]) => ({ ...acc, [k]: fn(k, v) }),
-    {} as Record<string, B>,
-  );
-};
+  fn: (k: string, v: A) => B
+): Record<string, B> => (
+  Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => ([
+      k,
+      fn(k, v)
+    ]))
+  )
+)
+
+export const objForEach = <A>(
+  obj: Record<string, A>,
+  fn: (k: string, v: A) => void
+): void => {
+  const keys = Object.keys(obj)
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i] 
+    fn(key, obj[key])
+  }
+}
 
 
 export const objLen = (obj: Record<string, any>): number => {
@@ -16,6 +34,13 @@ export const objLen = (obj: Record<string, any>): number => {
 
 export const sum = (arr: number[]) => arr.reduce((acc, p) => acc + p, 0)
 export const product = (arr: number[]) => arr.reduce((acc, p) => acc * p, 0.00001)
+
+
+export const loadSample = async <T>(key: string): Promise<T> => {
+  const fileBuffer = await promisify(fs.readFile)(path.join(__dirname, `../sample/${key}.json`))
+  const fileString = fileBuffer.toString()
+  return JSON.parse(fileString)
+}
 
 
 /*
@@ -30,14 +55,23 @@ export class Counter {
 
   static fromArray(arr: string[]): Counter {
     const target: Record<string, number> = {}
-    arr.forEach((key) => {
-      if (target[key]) {
-        target[key] = target[key] + 1;
-      } else {
-        target[key] = 1;
-      }
-    })
+    arr
+      .sort((a, b) => a.localeCompare(b))
+      .forEach((key) => {
+        if (target[key]) {
+          target[key] = target[key] + 1;
+        } else {
+          target[key] = 1;
+        }
+      })
+
     return new Counter(target)
+  }
+
+  toObject() {
+    return this.target
+    // .sort(([k0,v0], [k1,v1]) => v0 > v1 ? 1 : 0 )
+    // .reduce((acc, [k,v]) => ({ ...acc, [k]: v}), {})
   }
 
   set(key: string, count: number) {
@@ -47,7 +81,7 @@ export class Counter {
   count(key: string): number {
     return this.target[key] || 0
   }
-  
+
   len(): number {
     return Object.keys(this.target).length
   }
@@ -82,7 +116,7 @@ export class Counter {
     })
     return new Counter(fullTarget)
   }
-  
+
   // mutable
   extend(counter: Counter): Counter {
     counter.forEach((key, count) => {

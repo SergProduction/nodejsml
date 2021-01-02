@@ -1,8 +1,12 @@
-import { Counter, sum } from './lib'
+import { Counter, sum, objMap } from './lib'
 
 type CalcWeigthDoc = (count: number, len: number) => number
 type CalcWeigthCorpus = (count: number, len: number, docsLen: number) => number
 
+export type TFData = {
+  docs: Record<string, number>[]
+  corpus: Record<string, number>
+}
 
 export class TF {
   handleCalcDoc: CalcWeigthDoc
@@ -16,8 +20,49 @@ export class TF {
     this.docs = tfDocs || []
     this.corpus = tfCorpus || new Counter()
   }
+
+  static fromObject(data: TFData) {
+    const docs = data.docs.map(d => new Counter(d))
+    const corpus = new Counter(data.corpus)
+    return new TF(docs, corpus)
+  }
+
+  toObject() {
+    return {
+      docs: this.docs.map(v => v.toObject()),
+      corpus: this.corpus.toObject(),
+    }
+  }
+
   static getTerms(doc: string): string[] {
-    return doc.split(/\s+/)
+    // const regexp = /\s+/
+    // const regexp = /(\w+)/
+    const regexp = /(\w+|&|!|=|<|>|{|}|\[|\]|\(|\)|\+|-|@|\$|\*|\/|\?|"|'|,|;)/
+    // const f = ['=','<','>','{','}', '(', ')', '[', ']']
+    return doc
+      .split(regexp)
+      .filter(t =>
+          t !== ''
+          && /\d+/.test(t) === false
+          && /^\s+$/.test(t) === false
+      )
+      .map(t => {
+        if (t.indexOf('$') === 0) {
+          return '/$'
+        }
+        if (t.indexOf('.') !== -1) {
+          return t.split('').map(w => w === '.' ? '^' : w).join('')
+        }
+        return t
+      })
+      .reduce<string[]>((acc, it) => {
+        const last = acc[acc.length-1]
+        const ngramm = last.length < 3
+          ? last + it
+          : it
+        acc.push(ngramm)
+        return acc
+      }, [''])
   }
 
   addCorpus(corpus: string[]) {
@@ -57,25 +102,44 @@ export class TF {
   }
 }
 
+export type ManyTFData = Record<string, TFData>
+
 export class ManyTF {
   state: Record<string, TF>
   handleCalcDoc: CalcWeigthDoc
   handleCalcCorpus: CalcWeigthCorpus
+  log: boolean
 
   constructor(initState?: Record<string, TF>) {
-    this.state = {}
+    this.state = initState || {}
     this.handleCalcDoc = () => 1
     this.handleCalcCorpus = (count, len, docLen) => count / docLen
+    this.log = false
+  }
+
+  static fromObject(data: ManyTFData) {
+    const result = objMap(data, (label, tfData) => TF.fromObject(tfData))
+    return new ManyTF(result)
+  }
+
+  toObject() {
+    return objMap(this.state, (k, v) => v.toObject())
   }
 
   addCorpus(label: string, corpus: string[]) {
+    if (this.log) console.time(`addCorpus ${label}`)
+
     if (!this.state[label]) {
       this.state[label] = new TF()
     }
     this.state[label].addCorpus(corpus)
+
+    if (this.log) console.timeEnd(`addCorpus ${label}`)
   }
 
   calcWeigths(handleCalcDoc?: CalcWeigthDoc, handleCalcCorpus?: CalcWeigthCorpus, isImmutable?: boolean) {
+    if (this.log) console.time('calcWeigths')
+
     const calcDoc = handleCalcDoc || this.handleCalcDoc
     const calcCorpus = handleCalcCorpus || this.handleCalcCorpus
 
@@ -91,10 +155,15 @@ export class ManyTF {
       newManyTF.handleCalcCorpus = calcCorpus
       return newManyTF
     }
+
     this.state = newManyTf
+
+    if (this.log) console.timeEnd('calcWeigths')
   }
 
   predictLabel(doc: string) {
+    if (this.log) console.time('predictLabel')
+
     const docTerms = TF.getTerms(doc)
 
     const docWeigthsByCorpus = Object.keys(this.state).map(label => ({
@@ -106,6 +175,8 @@ export class ManyTF {
       label: t.label,
       weight: sum(t.weights)
     })).sort((a, b) => b.weight - a.weight)
+
+    if (this.log) console.timeEnd('predictLabel')
 
     return tryPredict
   }

@@ -1,51 +1,58 @@
-import { ManyTF } from './tf'
-import sampleJson from '../sample/prog-langs.json'
+
+import { ManyTF, ManyTFData } from './tf'
+// import sampleJson from '../sample/prog-langs.json'
 import checkSample from './check-sample'
+import { persist } from './persist'
+import { loadSample, objForEach, objMap } from './lib'
 
 
+/* to-do
+2:30 start
+3:15 save to bd and load from bd - 1h
+4 add repl
+---
+30m add effectors files from olimp and marked
+30m added one cluster method
+1h playnig with weigths. some example math.log10(x*x)
+*/
 
 
-const sliceDoc = (data: Record<string, string[]>, count: number) => (
-  Object.fromEntries(
-    Object.entries(data).map(([label, corpus]) => ([
-      label,
-      corpus.length > count ? corpus.slice(0, count) : corpus
-    ]))
-  )
-)
+ 
+const loadManyTF = async (key: string) => {
+  const maybeTf = await persist.load<ManyTFData>(key)
 
-const main = () => {  
-  const json = sliceDoc(sampleJson, 50)
+  if (maybeTf !== null) {
+    return ManyTF.fromObject(maybeTf)
+  }
 
-  const labels = Object.keys(json)
+  const fullSample = await loadSample<Record<string, string[]>>('prog-langs')
+
+  const sample = objMap(fullSample, (label, docs) => docs.slice(0, 50))
   
-  const parser = new ManyTF()
+  const tf = new ManyTF()
 
-  console.time('calculate')
-  labels.forEach((label, i) => {
-    console.log(`label: ${label}, docs:${json[label].length}`)
-    parser.addCorpus(label, json[label])
-    console.log(`all:${labels.length}, i:${i}`)
+  objForEach(sample, (label, docs) => {
+    tf.addCorpus(label, docs)
   })
-  console.timeEnd('calculate')
 
-  parser.calcWeigths()
+  await persist.save(key, tf.toObject())
 
-  checkSample.forEach(doc => {
-    console.time('predict')
-    const result = parser.predictLabel(doc)
+  return tf
+}
+
+const predictManyTF = async (sampleName: string, checkSamples: string[]) => {
+  const tf = await loadManyTF(sampleName)
+
+  tf.calcWeigths()
+
+  checkSamples.forEach(doc => {
+    const result = tf.predictLabel(doc)
     console.log(result)
-    console.timeEnd('predict')
   })
-
 }
 
-const printLabel = (label: string) => {
-  const json = sliceDoc(sampleJson, 5)
-  console.log(json[label])
-}
+predictManyTF('langs-raw', checkSample)
 
-main()
 
 // printLabel('Shell')
 
