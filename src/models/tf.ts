@@ -87,7 +87,7 @@ export class TF extends Model<TF_IO_Data, TF_ROW_DATA> {
     this.corpus.extend(tfDoc)
   }
 
-  calcWeigths(handleCalcDoc?: CalcWeigthDoc, handleCalcCorpus?: CalcWeigthCorpus, isImmutable?: boolean) {
+  learn(handleCalcDoc?: CalcWeigthDoc, handleCalcCorpus?: CalcWeigthCorpus, isImmutable?: boolean) {
     const calcWeigthDoc = handleCalcDoc || this.handleCalcDoc
     const calcWeigthCorpus = handleCalcCorpus || this.handleCalcCorpus
 

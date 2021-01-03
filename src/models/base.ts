@@ -33,7 +33,8 @@ export abstract class Model<ModelData, RowData> {
   abstract decode(modelData: ModelData): void
   abstract encode(): ModelData
   abstract setSample(rowData: RowData): void
-  // abstract learn(rowData: RowData): void
+  abstract learn(activateFn: any): any
+  abstract predict(p: any): any
   async load(sampleName: string, modelName: string) {
     const maybeModelData = await persist.load<ModelData>(modelName)
 

@@ -59,7 +59,7 @@ export class GroupTF extends Model<GroupTF_IO_Data, GroupTF_ROW_Data> {
     if (this.log) console.timeEnd(`addCorpus ${label}`)
   }
 
-  calcWeigths(handleCalcDoc?: CalcWeigthDoc, handleCalcCorpus?: CalcWeigthCorpus, isImmutable?: boolean) {
+  learn(handleCalcDoc?: CalcWeigthDoc, handleCalcCorpus?: CalcWeigthCorpus, isImmutable?: boolean) {
     if (this.log) console.time('calcWeigths')
 
     const calcDoc = handleCalcDoc || this.handleCalcDoc
@@ -67,7 +67,7 @@ export class GroupTF extends Model<GroupTF_IO_Data, GroupTF_ROW_Data> {
 
     const newGroupTf: Record<string, TF> = Object.keys(this.state).reduce((acc, label) => {
       const tf = this.state[label]
-      const newTf = tf.calcWeigths(calcDoc, calcCorpus, true)
+      const newTf = tf.learn(calcDoc, calcCorpus, true)
       return { ...acc, [label]: newTf }
     }, {})
 
@@ -83,7 +83,7 @@ export class GroupTF extends Model<GroupTF_IO_Data, GroupTF_ROW_Data> {
     if (this.log) console.timeEnd('calcWeigths')
   }
 
-  predictLabel(doc: string) {
+  predict(doc: string) {
     if (this.log) console.time('predictLabel')
 
     const docTerms = TF.getTerms(doc)
