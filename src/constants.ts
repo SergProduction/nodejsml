@@ -1,9 +1,9 @@
 import path from 'path'
 
 export const DIR = {
-  SAMPLE: path.join(__dirname, '../sample/'),
-  CHECKSAMPLE: path.join(__dirname, '../check-sample/'),
-  MODEL: path.join(__dirname, '../storage/'),
+  SAMPLE: path.join(__dirname, '../data/samples/'),
+  CHECKSAMPLE: path.join(__dirname, '../data/check-samples/'),
+  MODEL: path.join(__dirname, '../data/models/'),
 }
 
 export const FILE = {
