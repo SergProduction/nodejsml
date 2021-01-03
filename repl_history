@@ -1,4 +1,21 @@
 q
+groupTf
+groupTf.calcWeigths()
+groupTf.log = true
+groupTf
+groupTf.load('prog-langs','langs-raw')
+q
+groupTf.load('prog-langs','langs-raw')
+q
+groupTf.load('prog-langs','langs-raw')
+q
+groupTf.load('prog-langs','langs-raw')
+q
+groupTf.load('prog-langs','langs-raw')
+q
+groupTf.load('prog-langs','langs-raw')
+this
+q
 qq
 q
 Object.keys(r)
@@ -11,20 +28,3 @@ await p.keys()
 p
 q
 await p.keys()
-p
-q
-await p.keys()
-p
-q
-p
-this
-q
-this
-p
-q
-this
-p
-q
-b
-b.f('a', 1)
-let b = { f(k, v){ this.k = v } }et a = { f(k, v){ this.k = v } }t a = { f(k){ this.k = k } }ath.join('./asd/')sd'))en(log)All

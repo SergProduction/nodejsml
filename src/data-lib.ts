@@ -1,7 +1,3 @@
-import path from 'path'
-import fs, { RmOptions } from 'fs'
-import { promisify } from 'util'
-
 
 export const objMap = <A, B>(
   obj: Record<string, A>,
@@ -34,13 +30,6 @@ export const objLen = (obj: Record<string, any>): number => {
 
 export const sum = (arr: number[]) => arr.reduce((acc, p) => acc + p, 0)
 export const product = (arr: number[]) => arr.reduce((acc, p) => acc * p, 0.00001)
-
-
-export const loadSample = async <T>(key: string): Promise<T> => {
-  const fileBuffer = await promisify(fs.readFile)(path.join(__dirname, `../sample/${key}.json`))
-  const fileString = fileBuffer.toString()
-  return JSON.parse(fileString)
-}
 
 
 /*

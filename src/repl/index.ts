@@ -1,7 +1,8 @@
 import { defineCommand } from './configure-repl'
 
-import { persist } from '../persist'
+import { TF, GroupTF } from '../models'
 
 defineCommand({
-  p: persist
+  tf: new TF(),
+  groupTf: new GroupTF()
 })
