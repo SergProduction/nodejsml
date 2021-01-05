@@ -1,3 +1,12 @@
+q
+t.corpus.toArray(true).slice(100,200)
+await t.loadModel('telegram-random-row-tf')
+t = new features.TelegramTF()
+q
+t.corpus.len()
+t.loadModel('telegram-random-row-tf')
+t = new features.TelegramTF()
+q
 t.saveModel('telegram-random-row-tf')
 t.save('telegram-random-row-tf')
 t.docs[1001]
@@ -18,13 +27,4 @@ t.corpus.toArray(true).slice(30, 60)
 t.corpus.toArray(true).slice(30, 1000)
 t.corpus.toArray(true).slice(0, 1000)
 t.corpus.toArray(true).slice(0, 200)
-t.corpus.toArray(true).slice(0, 20)
-await t.loadSample('telegram-random')
-t = new features.TelegramTF()
-q
-t.corpus.toArray(true).slice(0, 20)
-await t.loadSample('telegram-random')
-t = new features.TelegramTF()
-q
-t.corpus.len()
-t.corpusq.len()andom')
+t.corpus.toArray(true).slice(0, 20)wait t.loadSample('telegram-random')ramTF()
