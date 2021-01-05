@@ -1,8 +1,15 @@
 import { defineCommand } from './configure-repl'
 
-import { TF, GroupTF } from '../models'
+import * as models from '../models'
+import * as parse from '../parsers'
+import * as features from '../features'
+import { DB } from '../persist'
+
+
 
 defineCommand({
-  tf: new TF(),
-  groupTf: new GroupTF()
+  DB: DB,
+  models,
+  parse,
+  features
 })

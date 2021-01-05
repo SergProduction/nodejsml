@@ -1,5 +1,5 @@
 import { Counter } from '../data-lib'
-import { Model } from './base'
+import { Model } from '../model'
 
 
 export type CalcWeigthDoc = (count: number, len: number) => number
@@ -10,13 +10,12 @@ TF - Term Frequence
 вычисляет частоту термов для каждого документа и для корпуса
 */
 
-export type TF_ROW_DATA = string[]
 export type TF_IO_Data = {
   docs: Record<string, number>[]
   corpus: Record<string, number>
 }
 
-export class TF extends Model<TF_IO_Data, TF_ROW_DATA> {
+export class TF extends Model<TF_IO_Data> {
   handleCalcDoc: CalcWeigthDoc
   handleCalcCorpus: CalcWeigthCorpus
   docs: Counter[]
@@ -30,11 +29,15 @@ export class TF extends Model<TF_IO_Data, TF_ROW_DATA> {
     this.corpus = tfCorpus || new Counter()
   }
 
-  static getTerms(doc: string): string[] {
-    // const regexp = /\s+/
-    // const regexp = /(\w+)/
-    const regexp = /(\w+|&|!|=|<|>|{|}|\[|\]|\(|\)|\+|-|@|\$|\*|\/|\?|"|'|,|;)/
-    // const f = ['=','<','>','{','}', '(', ')', '[', ']']
+  // чтоб можжно было переопределить метод getTerms, взять отсюда регулярку
+  static typeTerms = {
+    code: /(\w+|&|!|=|<|>|{|}|\[|\]|\(|\)|\+|-|@|\$|\*|\/|\?|"|'|,|;)/,
+    text: /(\w+|[а-я]+)/
+  }
+
+  getTerms(doc: string, typeTerms?: RegExp): string[] {
+    const regexp = typeTerms ? typeTerms : TF.typeTerms.text
+
     return doc
       .split(regexp)
       .filter(t =>
@@ -51,6 +54,7 @@ export class TF extends Model<TF_IO_Data, TF_ROW_DATA> {
         }
         return t
       })
+/*
       .reduce<string[]>((acc, it) => {
         const last = acc[acc.length-1]
         const ngramm = last.length < 3
@@ -59,6 +63,7 @@ export class TF extends Model<TF_IO_Data, TF_ROW_DATA> {
         acc.push(ngramm)
         return acc
       }, [''])
+*/
   }
 
   decode(modelData: TF_IO_Data) {
@@ -74,14 +79,12 @@ export class TF extends Model<TF_IO_Data, TF_ROW_DATA> {
     }
   }
 
-  setSample = this.addCorpus
-
-  addCorpus(corpus: TF_ROW_DATA) {
+  addCorpus(corpus: string[]) {
     corpus.forEach(doc => this.addDoc(doc))
   }
 
   addDoc(doc: string) {
-    const terms = TF.getTerms(doc)
+    const terms = this.getTerms(doc)
     const tfDoc = Counter.fromArray(terms)
     this.docs.push(tfDoc)
     this.corpus.extend(tfDoc)

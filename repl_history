@@ -1,30 +1,30 @@
+t.saveModel('telegram-random-row-tf')
+t.save('telegram-random-row-tf')
+t.docs[1001]
+t.docs[1000]
+t.docs.length
+t.corpus.toArray(true).slice(100,200)
+await t.loadSample('telegram-random')
+t = new features.TelegramTF()
 q
-groupTf
-groupTf.calcWeigths()
-groupTf.log = true
-groupTf
-groupTf.load('prog-langs','langs-raw')
+t.corpus.toArray(true).slice(100,200)
+t.corpus.toArray(true).slice(0,100)
+await t.loadSample('telegram-random')
+t = new features.TelegramTF()
 q
-groupTf.load('prog-langs','langs-raw')
+t.docs[100]
+t.corpus.toArray(true).slice(100, 200)
+t.corpus.toArray(true).slice(30, 60)
+t.corpus.toArray(true).slice(30, 1000)
+t.corpus.toArray(true).slice(0, 1000)
+t.corpus.toArray(true).slice(0, 200)
+t.corpus.toArray(true).slice(0, 20)
+await t.loadSample('telegram-random')
+t = new features.TelegramTF()
 q
-groupTf.load('prog-langs','langs-raw')
+t.corpus.toArray(true).slice(0, 20)
+await t.loadSample('telegram-random')
+t = new features.TelegramTF()
 q
-groupTf.load('prog-langs','langs-raw')
-q
-groupTf.load('prog-langs','langs-raw')
-q
-groupTf.load('prog-langs','langs-raw')
-this
-q
-qq
-q
-Object.keys(r)
-Object.keys(t)
-r = await p.load('langs-raw')
-p.load('langs-raw')
-p
-q
-await p.keys()
-p
-q
-await p.keys()
+t.corpus.len()
+t.corpusq.len()andom')
