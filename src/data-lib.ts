@@ -63,6 +63,14 @@ export class Counter {
     // .reduce((acc, [k,v]) => ({ ...acc, [k]: v}), {})
   }
 
+  toArray(isSort?: boolean): [string, number][] {
+    const result = Object.entries(this.target)
+    
+    return isSort
+      ? result.sort(([k0,v0], [k1,v1]) =>  v1 - v0)
+      : result
+  }
+
   set(key: string, count: number) {
     this.target[key] = count
   }

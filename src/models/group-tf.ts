@@ -1,5 +1,5 @@
 import { sum, objMap, objForEach } from '../data-lib'
-import { Model } from './base'
+import { Model } from '../model'
 import {
   TF,
   TF_IO_Data,
@@ -12,10 +12,9 @@ import {
 GroupTF
 */
 
-export type GroupTF_ROW_Data = Record<string, string[]>
-export type GroupTF_IO_Data = Record<string, TF_IO_Data>
+type GroupTF_IO_Data = Record<string, TF_IO_Data>
 
-export class GroupTF extends Model<GroupTF_IO_Data, GroupTF_ROW_Data> {
+export class GroupTF extends Model<GroupTF_IO_Data> {
   state: Record<string, TF>
   handleCalcDoc: CalcWeigthDoc
   handleCalcCorpus: CalcWeigthCorpus
@@ -42,9 +41,7 @@ export class GroupTF extends Model<GroupTF_IO_Data, GroupTF_ROW_Data> {
     return objMap(this.state, (k, v) => v.encode())
   }
 
-  setSample = this.addGroup
-
-  addGroup(rowData: GroupTF_ROW_Data) {
+  addGroup(rowData: Record<string, string[]>) {
     objForEach(rowData, (label, corpus) => this.addCorpus(label, corpus))
   }
 
@@ -86,7 +83,7 @@ export class GroupTF extends Model<GroupTF_IO_Data, GroupTF_ROW_Data> {
   predict(doc: string) {
     if (this.log) console.time('predictLabel')
 
-    const docTerms = TF.getTerms(doc)
+    const docTerms = (new TF).getTerms(doc)
 
     const docWeigthsByCorpus = Object.keys(this.state).map(label => ({
       label,
