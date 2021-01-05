@@ -42,6 +42,9 @@ export class Counter {
     this.target = target || {} // Object.create(null)
   }
 
+  /**
+   * returned new Counter
+   */
   static fromArray(arr: string[]): Counter {
     const target: Record<string, number> = {}
     arr
@@ -63,6 +66,10 @@ export class Counter {
     // .reduce((acc, [k,v]) => ({ ...acc, [k]: v}), {})
   }
 
+  /**
+   * return conut by key
+   * @param isSort is not required
+   */
   toArray(isSort?: boolean): [string, number][] {
     const result = Object.entries(this.target)
     
@@ -75,15 +82,23 @@ export class Counter {
     this.target[key] = count
   }
 
+  /**
+   * return conut by key
+   */
   count(key: string): number {
     return this.target[key] || 0
   }
 
+  /**
+   * return keys length Counter
+   */
   len(): number {
     return Object.keys(this.target).length
   }
 
-  // immutable
+  /**
+   * immutable iterable, return new Counter
+   */
   map(fn: (key: string, count: number, len: number) => number): Counter {
     const objectCounter: Record<string, number> = {}
     this.forEach((key, count, len) => {
@@ -92,7 +107,9 @@ export class Counter {
     return new Counter(objectCounter)
   }
 
-  // iter
+  /**
+   * mutable iterable
+   */
   forEach(fn: (key: string, count: number, len: number) => void): void {
     const len = this.len()
     Object.entries(this.target).forEach(([key, count]) => {
@@ -100,7 +117,9 @@ export class Counter {
     })
   }
 
-  // immutable
+  /**
+   * immutable joined A Counter from B Counter and return new Counter
+   */
   concat(counter: Counter): Counter {
     const fullTarget: Record<string, number> = {}
     const targets = [this.target, counter.target]
@@ -114,7 +133,9 @@ export class Counter {
     return new Counter(fullTarget)
   }
 
-  // mutable
+  /**
+   * mutable joined A Counter from B Counter
+   */
   extend(counter: Counter): Counter {
     counter.forEach((key, count) => {
       this.target[key] = this.target[key]

@@ -36,7 +36,6 @@ const repl = Repl.start({
   useColors: true,
   // replMode: Repl.REPL_MODE_STRICT,
   // eval: customEval,
-  ignoreUndefined: true,
 });
 
 

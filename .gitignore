@@ -1,2 +1,10 @@
 /node_modules
 /dist
+/data/models/
+/data/samples/
+/data/check-sample/
+/data/row-samples/
+
+!/data/row-samples/telegram/random
+!/data/samples/telegram-random
+!/data/models/telegram-random-row-tf
