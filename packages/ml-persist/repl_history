@@ -1,0 +1,30 @@
+q
+_
+repl
+this
+help
+q
+tf.loadSample
+ng.loadSample('telegram-random')
+tf.prototype
+tf.__proto__
+ng.__proto__
+ng.prototype
+ng
+ng = new models.NGramm()
+models
+tf.learn()
+await tf.loadModel('telegram-random-row-tf')
+tf = new models.TF()
+tf.corpus
+tf.corpus.length
+tf.docs.length
+tf
+tf.loadModel('telegram-random-row-tf')
+tf.loadModel
+db = new DB()
+db
+db = new DB
+DB
+tf.load
+tf = new models.TF()odels.TF.loadodels.TFlsdel.toArray(true).slice(0,100)ample('telegram-random')m-random')ures.TelegramNGramm()ce(0,100)t.loadSample('telegram-sovchat')atures.TelegramNGramm()0)true).slice(0,100)mple('telegram-random')= new features.TelegramNGramm()e(0,100)ait t.loadSample('telegram-random')tures.TelegramNGramm()toArray(true).slice(200,300)).slice(100,200)y(true).slice(0,100)oadSample('telegram-random')w features.TelegramNGramm()t t.loadSample('telegram-random')m-random')
