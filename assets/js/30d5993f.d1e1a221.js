@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[725],{6353:function(e){"use strict";e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Welcome","permalink":"/nodejsml/blog/welcome"},{"title":"Hello","permalink":"/nodejsml/blog/hello-world"},{"title":"Hola","permalink":"/nodejsml/blog/hola"}]}')}}]);
