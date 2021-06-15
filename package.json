@@ -6,8 +6,7 @@
     "./packages/*"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "doc": "npm run -w website serve",
+    "doc": "npm run -w website start",
     "repl": "npm run -w ml-persist repl"
   },
   "repository": {

@@ -19,7 +19,10 @@ export type Message = {
   date: Date,
 }
 
-const log = (...p: any) => {} // console.log
+
+const log = false
+  ? console.log
+  : (...p: any) => {}
 
 
 export const htmlParse = (html: string): Message[] => {

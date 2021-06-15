@@ -1,17 +1,17 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: 'My Site',
+  title: 'ML Persist',
   tagline: 'Dinosaurs are cool',
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://nodejsml.dev',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'Sergey Filippov', // Usually your GitHub org/user name.
+  projectName: 'nodejsml', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'ML Persist',
       logo: {
         alt: 'My Site Logo',
         src: 'img/logo.svg',
@@ -19,13 +19,17 @@ module.exports = {
       items: [
         {
           type: 'doc',
-          docId: 'intro',
+          docId: 'quick-start',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Быстрый старт',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          to: '/blog',
+          label: 'Блог',
+          position: 'left'
+        },
+        {
+          href: 'https://github.com/',
           label: 'GitHub',
           position: 'right',
         },

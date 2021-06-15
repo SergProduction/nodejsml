@@ -1,0 +1,7 @@
+{
+  "favorites.resources": [
+    "package.json",
+    "packages/website/package.json",
+    "packages/ml-persist/package.json"
+  ]
+}

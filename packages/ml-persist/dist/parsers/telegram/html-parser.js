@@ -5,12 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.htmlParse = void 0;
 var cheerio_1 = __importDefault(require("cheerio"));
-var log = function () {
-    var p = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        p[_i] = arguments[_i];
-    }
-}; // console.log
+var log = false
+    ? console.log
+    : function () {
+        var p = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            p[_i] = arguments[_i];
+        }
+    };
 var htmlParse = function (html) {
     var $ = cheerio_1.default.load(html);
     var day = null;

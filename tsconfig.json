@@ -1,5 +1,6 @@
 {
+  "include": [],
   "references": [
-    { "path": "../packages/ml-persist" }
+    { "path": "./packages/ml-persist" }
   ]
 }
