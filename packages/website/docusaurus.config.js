@@ -2,13 +2,13 @@
 module.exports = {
   title: 'ML Persist',
   tagline: 'Dinosaurs are cool',
-  url: 'https://nodejsml.dev',
+  url: 'https://sergproduction.github.io.',
   baseUrl: '/',
+  organizationName: 'sergproduction', // Usually your GitHub org/user name.
+  favicon: 'img/favicon.ico',
+  projectName: 'nodejsml', // Usually your repo name.
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
-  organizationName: 'Sergey Filippov', // Usually your GitHub org/user name.
-  projectName: 'nodejsml', // Usually your repo name.
   themeConfig: {
     navbar: {
       title: 'ML Persist',
@@ -43,7 +43,7 @@ module.exports = {
           items: [
             {
               label: 'Tutorial',
-              to: '/docs/intro',
+              to: '/docs/quick-start',
             },
           ],
         },

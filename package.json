@@ -1,7 +1,7 @@
 {
-  "name": "ml-persist",
+  "name": "nodejsml",
   "version": "1.0.0",
-  "description": "Удобная интерактивная разработка своих алгоритмов для больших данных.   с возможностью загружать данные выборки в модель,   сохранять вычисленную модель данных,   и загружать ее снова при следующих сеансах работы",
+  "description": "Удобная интерактивная разработка своих алгоритмов для больших данных. с возможностью загружать данные выборки в модель, сохранять вычисленную модель данных, и загружать ее снова при следующих сеансах работы",
   "workspaces": [
     "./packages/*"
   ],
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SergProduction/tf-detect-label.git"
+    "url": "git+https://github.com/SergProduction/nodejsml.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/SergProduction/tf-detect-label/issues"
+    "url": "https://github.com/SergProduction/nodejsml/issues"
   },
-  "homepage": "https://github.com/SergProduction/tf-detect-label#readme",
+  "homepage": "https://github.com/SergProduction/nodejsml#readme",
   "devDependencies": {
     "lerna": "^4.0.0"
   }
